@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="/icons/icon32.png" />
+    <title>on a second thought… · the daily ledger of restraint</title>
+    <style>
+      /* sand & ink for day, forest & parchment for night */
+      :root, [data-theme="light"] {
+        --paper: #E9DFC6; --card: #F3ECD8; --ink: #2A2618; --ink2: #5E5740; --ink3: #8A7F62;
+        --line: #C9BB97; --line2: #B6A57E; --rule: #2A2618;
+        --gold: #B8860B; --gold-soft: #EFE3BD; --green: #2E6B3A; --red: #9C3328;
+        --serif: 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+        --mono: 'Courier New', Courier, monospace;
+      }
+      [data-theme="dark"] {
+        --paper: #121A12; --card: #18221700; --card: #1A241A; --ink: #E8E4D2; --ink2: #B3BBA2; --ink3: #7E8B6F;
+        --line: #2F3D2B; --line2: #3C4D36; --rule: #C7B98F;
+        --gold: #D9B24A; --gold-soft: #243021; --green: #8BCB8F; --red: #E0796F;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body {
+        background-color: var(--paper); color: var(--ink); font-family: var(--serif);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        font-size: 16px; line-height: 1.6; padding-bottom: 110px;
+      }
+      .num, input[type="number"], .mono, .stat-n, .pi-meta, .status { font-family: var(--mono) !important; }
+      .wrap { max-width: 1180px; margin: 0 auto; padding: 40px 36px 0; }
+      a { color: var(--gold); text-decoration: none; } a:hover { text-decoration: underline; }
+
+      /* ---- masthead ---- */
+      .masthead { border-bottom: 4px double var(--rule); padding-bottom: 14px; }
+      .topline { display: flex; align-items: center; gap: 14px; font-size: 12px; letter-spacing: 0.18em;
+        text-transform: uppercase; color: var(--ink2); padding-bottom: 10px; }
+      .topline .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gold);
+        animation: moodglow 24s ease-in-out infinite; }
+      @keyframes moodglow {
+        0%,100% { box-shadow: 0 0 9px 2px hsla(43,90%,55%,.8); background: hsl(43 80% 55%); }
+        25% { box-shadow: 0 0 9px 2px hsla(205,80%,60%,.8); background: hsl(205 70% 58%); }
+        50% { box-shadow: 0 0 9px 2px hsla(135,65%,50%,.8); background: hsl(135 55% 50%); }
+        75% { box-shadow: 0 0 9px 2px hsla(0,75%,62%,.7); background: hsl(0 65% 60%); }
+      }
+      .topline .right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+      .themebtn { background: none; border: 1.5px solid var(--line2); border-radius: 50%; width: 32px; height: 32px;
+        font-size: 15px; cursor: pointer; color: var(--ink2); line-height: 1; }
+      .themebtn:hover { border-color: var(--gold); }
+      .status { font-size: 10px; letter-spacing: 0.12em; padding: 4px 10px; border-radius: 99px;
+        border: 1px solid var(--line2); color: var(--ink3); }
+      .status.armed { border-color: var(--green); color: var(--green); }
+      .status.off { border-color: var(--red); color: var(--red); }
+      h1.title { font-size: 64px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.02; font-style: italic; }
+      .subhead { display: flex; justify-content: space-between; align-items: baseline; margin-top: 8px;
+        border-top: 1px solid var(--line); padding-top: 8px; font-style: italic; color: var(--ink2); font-size: 15px; }
+
+      /* ---- intro ---- */
+      .lede { columns: 2; column-gap: 40px; margin: 24px 0 8px; font-size: 16px; }
+      .lede p { margin-bottom: 10px; }
+      /* large initial, vertically centered on the first line (line-height:0 keeps
+         it from stretching the line; vertical-align drops its centre onto the line) */
+      .lede p:first-child::first-letter {
+        font-size: 2.1em; font-weight: 700; line-height: 0; vertical-align: -0.38em;
+        margin-right: 0.05em; color: var(--ink);
+      }
+
+      /* ---- columns of settings ---- */
+      .columns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; margin-top: 28px;
+        border-top: 3px solid var(--rule); }
+      .col { padding: 22px 26px; border-right: 1px solid var(--line); }
+      .col:last-child { border-right: none; }
+      .col .kicker { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 3px; }
+      .col h2 { font-size: 23px; font-weight: 800; margin-bottom: 6px; }
+      .col p.note { font-size: 13.5px; color: var(--ink2); margin-bottom: 4px; }
+
+      label.f { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+        color: var(--ink2); margin: 14px 0 6px; }
+      .col > label.f:first-of-type, .col p.note + label.f { margin-top: 10px; }
+      input[type="number"], input[type="text"] {
+        width: 100%; background: var(--card); border: 1.5px solid var(--line2); border-radius: 7px;
+        padding: 10px 12px; font-size: 15px; color: var(--ink); }
+      input:focus { outline: none; border-color: var(--gold); }
+      .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end; }
+      .help { font-size: 12px; color: var(--ink3); margin-top: 5px; font-style: italic; }
+
+      .seg { display: flex; gap: 6px; flex-wrap: wrap; }
+      .seg input { display: none; }
+      .seg label { cursor: pointer; border: 1.5px solid var(--line2); border-radius: 7px; padding: 8px 11px;
+        font-size: 13px; background: var(--card); flex: 1 1 auto; }
+      .seg label b { display: block; font-weight: 700; }
+      .seg label span { font-size: 11px; color: var(--ink3); }
+      .seg input:checked + label { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); }
+      .chips-mini { display: flex; gap: 6px; margin-top: 9px; flex-wrap: wrap; }
+      .chip { font-family: var(--mono); font-size: 11px; background: var(--card); border: 1px solid var(--line);
+        border-radius: 5px; padding: 3px 8px; color: var(--ink2); }
+
+      .toggle { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+      .toggle .grow { flex: 1; } .toggle b { font-size: 14px; } .toggle p { font-size: 12px; color: var(--ink3); }
+      .switch { position: relative; width: 42px; height: 25px; flex: none; }
+      .switch input { display: none; }
+      .switch i { position: absolute; inset: 0; background: var(--line2); border-radius: 99px; cursor: pointer; transition: background .15s; }
+      .switch i::after { content:""; position: absolute; top: 3px; left: 3px; width: 19px; height: 19px; background: #fff;
+        border-radius: 50%; transition: transform .15s; }
+      .switch input:checked + i { background: var(--gold); }
+      .switch input:checked + i::after { transform: translateX(17px); }
+
+      .anchor-row { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; margin-bottom: 8px; }
+      .preview { background: #14110A; color: #F3ECD8; border-radius: 9px; padding: 15px 17px; margin-top: 16px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+      .preview .ptag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #B0A988; }
+      .preview .pline { font-size: 16px; margin-top: 7px; line-height: 1.6; }
+      .preview .pline strong { color: #E8C55B; }
+      .preview .pdim { color: #8A8468; font-size: 12px; margin-top: 7px; font-style: italic; }
+
+      .chipbar { display: flex; gap: 8px; }
+      .addbtn, .ghostbtn { border: 1.5px solid var(--line2); background: var(--card); color: var(--ink); border-radius: 7px;
+        padding: 10px 16px; font-size: 13.5px; font-weight: 600; cursor: pointer; font-family: var(--serif); }
+      .addbtn:hover, .ghostbtn:hover { border-color: var(--gold); }
+      .ghostbtn.red { color: var(--red); } .ghostbtn.red:hover { border-color: var(--red); }
+      .skipchips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+      .skipchip { display: inline-flex; align-items: center; gap: 5px; background: var(--gold-soft);
+        border: 1px solid var(--line2); border-radius: 99px; padding: 4px 7px 4px 12px; font-size: 13px; }
+      .skipchip button { background: none; border: none; cursor: pointer; color: var(--ink2); padding: 0 3px; }
+      .skipchip button:hover { color: var(--red); }
+      .databtns { display: flex; flex-direction: column; gap: 9px; margin-top: 6px; }
+
+      /* ---- bottom: the two ledgers ---- */
+      .ledgers { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 32px;
+        border-top: 3px solid var(--rule); border-bottom: 3px double var(--rule); }
+      .ledger { padding: 22px 26px; border-right: 1px solid var(--line); }
+      .ledger:last-child { border-right: none; }
+      .ledger h2 { font-size: 23px; font-weight: 800; }
+      .ledger .kicker { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+      .entry { display: flex; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); align-items: baseline; }
+      .entry:first-of-type { border-top: none; }
+      .entry .e-title { flex: 1; min-width: 0; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .entry .e-amt { font-family: var(--mono); font-size: 14px; color: var(--ink2); white-space: nowrap; }
+      .entry .e-meta { font-size: 11.5px; color: var(--ink3); font-style: italic; }
+      .ready { color: var(--green); font-weight: 700; font-style: normal; }
+      .empty { color: var(--ink3); font-style: italic; font-size: 14px; padding: 6px 0; }
+
+      .colophon { text-align: center; font-style: italic; color: var(--ink3); font-size: 14px;
+        padding: 26px 0 8px; margin-top: 18px; border-top: 1px solid var(--line); }
+      .savebar { position: fixed; bottom: 0; left: 0; right: 0; background: color-mix(in srgb, var(--paper) 94%, transparent);
+        backdrop-filter: blur(7px); border-top: 2px solid var(--rule); padding: 13px 36px; }
+      .savebar .inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
+      .save { background: var(--gold); color: #1B1A14; border: none; border-radius: 8px; padding: 13px 30px;
+        font-size: 15px; font-weight: 700; cursor: pointer; font-family: var(--serif); }
+      .save:hover { filter: brightness(1.06); }
+      #savedmsg { font-size: 13.5px; color: var(--green); opacity: 0; transition: opacity .2s; font-style: italic; }
+      #savedmsg.show { opacity: 1; }
+      @media (max-width: 900px) { .columns, .ledgers, .lede { grid-template-columns: 1fr; columns: 1; }
+        .col, .ledger { border-right: none; border-bottom: 1px solid var(--line); } h1.title { font-size: 44px; } }
+    </style>
+    <script type="module" crossorigin src="/assets/index.html-Co68vS6-.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/csv-BxR5ii6W.js">
+    <link rel="modulepreload" crossorigin href="/assets/parkingLot-Dxw3aUs8.js">
+    <link rel="modulepreload" crossorigin href="/assets/taxEngine-Ctj_axiC.js">
+    <link rel="modulepreload" crossorigin href="/assets/personalUnits-qqcaQPHO.js">
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="masthead">
+        <div class="topline">
+          <span class="dot"></span>
+          <span id="dateline">the daily ledger of restraint</span>
+          <span class="right">
+            <button class="themebtn" id="themeBtn" title="theme">◐</button>
+            <span class="status" id="status">not armed</span>
+          </span>
+        </div>
+        <h1 class="title">on a second thought…</h1>
+        <div class="subhead">
+          <span>almost bought it · a gentle pause between wanting &amp; paying</span>
+          <span class="mono">price № you · vol. i</span>
+        </div>
+      </header>
+
+      <div class="lede">
+        <p>stores spend billions making spending frictionless. this little paper puts the friction back · a short tax of time and breath between the wanting and the paying, so the decision is made by you, and not by the spike.</p>
+        <p>set your terms below. then shop as usual: anything above your threshold gets a calm interruption · breathe with the blob, see the price in hours of your life, then walk away, park it, or buy with a clear head. everything stays on this device.</p>
+      </div>
+
+      <div class="columns">
+        <!-- column 1: the pause -->
+        <section class="col">
+          <div class="kicker">section i</div>
+          <h2>the pause</h2>
+          <p class="note">when, how long, and what it asks of you.</p>
+
+          <div class="two">
+            <div><label class="f" for="threshold">intercept above ($)</label><input id="threshold" type="number" min="1" step="1" /></div>
+            <div><label class="f" for="taxMinutes">base timer (min)</label><input id="taxMinutes" type="number" min="1" max="30" step="1" /></div>
+          </div>
+          <div class="help" id="timerHelp">in scaled mode this is the wait at a $100 purchase.</div>
+
+          <label class="f">timer style</label>
+          <div class="seg">
+            <input type="radio" name="timerMode" id="tm-scaled" value="scaled" />
+            <label for="tm-scaled"><b>scales with price</b><span>bigger buy, longer wait</span></label>
+            <input type="radio" name="timerMode" id="tm-fixed" value="fixed" />
+            <label for="tm-fixed"><b>fixed</b><span>same wait always</span></label>
+          </div>
+          <div class="chips-mini" id="scaleDemo"></div>
+
+          <label class="f">the task afterwards</label>
+          <div class="seg">
+            <input type="radio" name="taxType" id="tt-reflection" value="reflection" />
+            <label for="tt-reflection"><b>reflection</b><span>type why</span></label>
+            <input type="radio" name="taxType" id="tt-math" value="math" />
+            <label for="tt-math"><b>arithmetic</b><span>3 sums</span></label>
+            <input type="radio" name="taxType" id="tt-puzzle" value="puzzle" />
+            <label for="tt-puzzle"><b>puzzle</b><span>slide tiles</span></label>
+            <input type="radio" name="taxType" id="tt-dino" value="dino" />
+            <label for="tt-dino"><b>dino run</b><span>jump cacti</span></label>
+            <input type="radio" name="taxType" id="tt-timer" value="timer_only" />
+            <label for="tt-timer"><b>just breathe</b><span>only the timer</span></label>
+          </div>
+
+          <div class="toggle">
+            <div class="grow"><b>night guard 🌙</b><p>10pm–6am: timer +50%, shows the clock. self control runs lowest late.</p></div>
+            <label class="switch"><input type="checkbox" id="nightGuard" /><i></i></label>
+          </div>
+          <div class="toggle">
+            <div class="grow"><b>close tab after walking away</b><p>lingering tabs refill carts. recommended.</p></div>
+            <label class="switch"><input type="checkbox" id="autoClose" /><i></i></label>
+          </div>
+
+          <div class="two">
+            <div><label class="f" for="parkDays">parking days</label><input id="parkDays" type="number" min="1" max="365" step="1" /></div>
+            <div><label class="f" for="overrideHours">panic lasts (hrs)</label><input id="overrideHours" type="number" min="1" max="720" step="1" /></div>
+          </div>
+          <div class="help">the panic button skips a pause but then disables all protection for this long · make it cost something.</div>
+        </section>
+
+        <!-- column 2: your units -->
+        <section class="col">
+          <div class="kicker">section ii</div>
+          <h2>your units</h2>
+          <p class="note">a price tag is an abstract number your brain barely feels · that's why cards beat cash. translate every price into the currency of your own life.</p>
+
+          <div class="two">
+            <div><label class="f" for="hourly">take home ($/hr)</label><input id="hourly" type="number" min="0" step="0.5" placeholder="22" /></div>
+            <div><label class="f" for="monthly">…or monthly ($)</label><input id="monthly" type="number" min="0" step="50" placeholder="3500" /></div>
+          </div>
+          <div class="help">monthly ÷ 160 fills the hourly figure.</div>
+
+          <label class="f">anchor items · your everyday yardsticks</label>
+          <div class="anchor-row"><input id="a1label" type="text" placeholder="latte" /><input id="a1price" type="number" min="0" step="0.5" placeholder="6" /></div>
+          <div class="anchor-row"><input id="a2label" type="text" placeholder="burrito bowl" /><input id="a2price" type="number" min="0" step="0.5" placeholder="11" /></div>
+          <div class="anchor-row"><input id="a3label" type="text" placeholder="month of rent" /><input id="a3price" type="number" min="0" step="10" placeholder="1400" /></div>
+          <div class="help">pick things you buy often enough to feel.</div>
+
+          <div class="preview">
+            <div class="ptag">live preview · shown on every pause</div>
+            <div class="pline" id="previewLine">enter your pay or an anchor to see prices in your units.</div>
+            <div class="pdim">right click any price on any page → convert to my units.</div>
+          </div>
+        </section>
+
+        <!-- column 3: what passes & your data -->
+        <section class="col">
+          <div class="kicker">section iii</div>
+          <h2>what passes</h2>
+          <p class="note">things you buy on purpose, not on impulse · groceries, medicine, textbooks. any product matching a term below is never interrupted.</p>
+          <div class="chipbar">
+            <input id="skipInput" type="text" placeholder='e.g. "groceries", "diapers"' />
+            <button class="addbtn" id="skipAdd">add</button>
+          </div>
+          <div class="skipchips" id="skipChips"></div>
+
+          <h2 style="margin-top:26px">your data</h2>
+          <p class="note">everything is yours, on this device. no servers, no accounts, no telemetry.</p>
+          <div class="databtns">
+            <button class="ghostbtn" id="exportCsv">⬇ export csv (ledger + parking lot)</button>
+            <button class="ghostbtn red" id="resetAll">reset everything</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- bottom: the two running ledgers -->
+      <div class="ledgers">
+        <section class="ledger">
+          <div class="kicker">the column of restraint</div>
+          <h2>almost bought</h2>
+          <div id="almostList"><div class="empty">nothing yet · your walk aways will be recorded here, with links.</div></div>
+        </section>
+        <section class="ledger">
+          <div class="kicker">held for later</div>
+          <h2>the parking lot</h2>
+          <div id="parkedList"><div class="empty">nothing parked. "park it" on any pause holds the urge until it matures.</div></div>
+        </section>
+      </div>
+
+      <footer class="colophon">made with love by the nonconsumer</footer>
+    </div>
+
+    <div class="savebar">
+      <div class="inner">
+        <button class="save" id="save">save &amp; arm</button>
+        <span id="savedmsg">saved · armed. go try a checkout.</span>
+      </div>
+    </div>
+
+  </body>
+</html>

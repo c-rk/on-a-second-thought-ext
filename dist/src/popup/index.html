@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="/icons/icon32.png" />
+    <style>
+      :root, [data-theme="light"] {
+        --paper: #F7F3E9; --card: #FDFBF4; --ink: #2B2820; --ink2: #6E6857; --ink3: #998F78;
+        --line: #E2DCC9; --yellow: #F5C400; --green: #1A7F37; --red: #C2403F;
+        --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+        --mono: 'Courier New', Courier, monospace;
+      }
+      [data-theme="dark"] {
+        --paper: #161512; --card: #201F1A; --ink: #EAE6D8; --ink2: #A8A28E; --ink3: #87816E;
+        --line: #2F2D25; --green: #6FCF8E; --red: #E8716F;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body { width: 340px; background-color: var(--paper); color: var(--ink);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        font-family: var(--serif); font-size: 13.5px; }
+      .big, .stat b, #detect .money, .pi-meta, .legend .amt { font-family: var(--mono) !important; }
+      .pad { padding: 16px; }
+      .toprow { display: flex; align-items: center; gap: 9px; }
+      .mark { border-radius: 5px; display: block; }
+      .name { font-weight: 700; font-size: 14.5px; font-style: italic; }
+      .themebtn { margin-left: auto; background: none; border: 1px solid var(--line); border-radius: 50%;
+        width: 26px; height: 26px; font-size: 13px; cursor: pointer; color: var(--ink2); line-height: 1; padding: 0; }
+      .themebtn:hover { border-color: var(--yellow); }
+      .status { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.12em;
+        text-transform: uppercase; padding: 3px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--ink3); }
+      .status.armed { border-color: var(--green); color: var(--green); }
+      .status.off { border-color: var(--red); color: var(--red); }
+
+      .hero { margin-top: 14px; }
+      .label { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink3); }
+      .big { font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; margin-top: 2px; }
+      .units { color: var(--ink2); font-size: 12px; margin-top: 2px; }
+
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+      .stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+      .stat b { display: block; font-size: 16px; font-variant-numeric: tabular-nums; }
+      .stat span { font-size: 10.5px; color: var(--ink3); }
+      .stat b.warn { color: var(--red); }
+
+      .panel { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-top: 12px; }
+      .panel h3 { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink3); margin-bottom: 8px; }
+      #detect { font-size: 12px; line-height: 1.7; color: var(--ink2); }
+      #detect .ok { color: var(--green); font-weight: 600; }
+      #detect .no { color: var(--ink3); }
+      #detect .money { font-family: var(--mono); }
+
+      .bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin-bottom: 8px; }
+      .bar i { display: block; height: 100%; }
+      .legend { font-size: 11px; color: var(--ink2); line-height: 1.8; }
+      .legend .swatch { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; }
+      .legend .amt { float: right; font-family: var(--mono); color: var(--ink3); }
+
+      .parked-item { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid var(--line); }
+      .parked-item:first-of-type { border-top: none; }
+      .pi-info { flex: 1; min-width: 0; }
+      .pi-title { font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        color: var(--ink); text-decoration: none; display: block; cursor: pointer; }
+      .pi-title:hover { text-decoration: underline; }
+      .pi-meta { font-size: 10.5px; color: var(--ink3); font-variant-numeric: tabular-nums; }
+      .pi-meta .ready { color: var(--green); font-weight: 700; }
+      .pi-btn { border: 1px solid var(--line); background: var(--paper); border-radius: 6px; padding: 4px 8px;
+        font-size: 10.5px; cursor: pointer; color: var(--ink2); }
+      .pi-btn:hover { border-color: var(--ink); color: var(--ink); }
+      .pi-btn.go { border-color: var(--green); color: var(--green); }
+      .empty { color: var(--ink3); font-size: 12px; font-style: italic; }
+
+      .footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+      .footer a, .footer button { color: var(--ink); font-size: 12px; font-weight: 600; text-decoration: none;
+        background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; }
+      .footer a:hover, .footer button:hover { text-decoration: underline; }
+      .colophon { text-align: center; font-style: italic; color: var(--ink3); font-size: 10.5px;
+        margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--line); }
+    </style>
+    <script type="module" crossorigin src="/assets/index.html-BWnHHo4W.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/csv-BxR5ii6W.js">
+    <link rel="modulepreload" crossorigin href="/assets/parkingLot-Dxw3aUs8.js">
+    <link rel="modulepreload" crossorigin href="/assets/categories-CCmypuoU.js">
+    <link rel="modulepreload" crossorigin href="/assets/personalUnits-qqcaQPHO.js">
+  </head>
+  <body>
+    <div class="pad">
+      <div class="toprow">
+        <img class="mark" src="/icons/icon32.png" alt="" width="22" height="22" />
+        <span class="name">on a second thought&hellip;</span>
+        <button class="themebtn" id="themeBtn" title="theme">◐</button>
+        <span class="status" id="status">…</span>
+      </div>
+
+      <div class="hero">
+        <div class="label">Almost bought · money kept</div>
+        <div class="big" id="total">$0</div>
+        <div class="units" id="totalUnits"></div>
+      </div>
+
+      <div class="grid">
+        <div class="stat"><b id="month">$0</b><span>this month</span></div>
+        <div class="stat"><b id="overrides" class="warn">0</b><span>emergency overrides</span></div>
+      </div>
+
+      <div class="panel" id="chartPanel" style="display:none">
+        <h3>What you almost buy 💭</h3>
+        <div class="bar" id="chartBar"></div>
+        <div class="legend" id="chartLegend"></div>
+      </div>
+
+      <div class="panel">
+        <h3>This page</h3>
+        <div id="detect">checking…</div>
+      </div>
+
+      <div class="panel">
+        <h3>Parking lot</h3>
+        <div id="parked"><span class="empty">Nothing parked. "Park it" on any intercept saves the urge until it matures.</span></div>
+      </div>
+
+      <div class="footer">
+        <a href="#" id="options">settings →</a>
+        <button id="exportCsv">⬇ csv</button>
+      </div>
+      <div class="colophon">made with love by the nonconsumer</div>
+    </div>
+  </body>
+</html>
