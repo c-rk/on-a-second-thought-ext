@@ -21,7 +21,7 @@
   "content_scripts": [
     {
       "js": [
-        "assets/index.ts-loader-DOu0xZC3.js"
+        "assets/index.ts-loader-04MrVdQ-.js"
       ],
       "matches": [
         "<all_urls>"
@@ -48,10 +48,10 @@
       ],
       "resources": [
         "assets/personalUnits-qqcaQPHO.js",
-        "assets/taxEngine-Ctj_axiC.js",
-        "assets/parkingLot-Dxw3aUs8.js",
+        "assets/taxEngine-CYtU0DVd.js",
+        "assets/parkingLot-C-Q_MqRQ.js",
         "assets/categories-CCmypuoU.js",
-        "assets/index.ts-BX_iuTOf.js"
+        "assets/index.ts-Bawi4LRQ.js"
       ],
       "use_dynamic_url": false
     }
